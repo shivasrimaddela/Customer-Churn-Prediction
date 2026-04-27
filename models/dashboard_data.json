@@ -1,0 +1,131 @@
+{
+  "best_model": "Logistic Regression",
+  "churn_distribution": {
+    "No Churn": 5174,
+    "Churn": 1869
+  },
+  "model_comparison": [
+    {
+      "model": "Logistic Regression",
+      "accuracy": 0.8105039034776437,
+      "precision": 0.6666666666666666,
+      "recall": 0.5721925133689839,
+      "f1_score": 0.6158273381294964,
+      "confusion_matrix": [
+        [
+          928,
+          107
+        ],
+        [
+          160,
+          214
+        ]
+      ],
+      "probability_average": 0.26600515790731116
+    },
+    {
+      "model": "Gaussian Naive Bayes",
+      "accuracy": 0.730305180979418,
+      "precision": 0.494949494949495,
+      "recall": 0.786096256684492,
+      "f1_score": 0.6074380165289256,
+      "confusion_matrix": [
+        [
+          735,
+          300
+        ],
+        [
+          80,
+          294
+        ]
+      ],
+      "probability_average": 0.4213988634848552
+    },
+    {
+      "model": "Decision Tree (gini)",
+      "accuracy": 0.7310149041873669,
+      "precision": 0.49403341288782815,
+      "recall": 0.553475935828877,
+      "f1_score": 0.5220680958385876,
+      "confusion_matrix": [
+        [
+          823,
+          212
+        ],
+        [
+          167,
+          207
+        ]
+      ],
+      "probability_average": 0.2978471729358883
+    },
+    {
+      "model": "Decision Tree (entropy)",
+      "accuracy": 0.7317246273953159,
+      "precision": 0.4948186528497409,
+      "recall": 0.5106951871657754,
+      "f1_score": 0.5026315789473684,
+      "confusion_matrix": [
+        [
+          840,
+          195
+        ],
+        [
+          183,
+          191
+        ]
+      ],
+      "probability_average": 0.2751360302815235
+    }
+  ],
+  "feature_importance": [
+    {
+      "feature": "Dependents_Yes",
+      "importance": 1.0143638572803475
+    },
+    {
+      "feature": "Contract_Two year",
+      "importance": 0.9148592940890824
+    },
+    {
+      "feature": "Tenure Months",
+      "importance": 0.87945484341001
+    },
+    {
+      "feature": "Contract_Month-to-month",
+      "importance": 0.6445669272367033
+    },
+    {
+      "feature": "Dependents_No",
+      "importance": 0.6020246928667836
+    },
+    {
+      "feature": "Internet Service_DSL",
+      "importance": 0.5823070856477828
+    },
+    {
+      "feature": "Internet Service_Fiber optic",
+      "importance": 0.5203243945860245
+    },
+    {
+      "feature": "Monthly Charges",
+      "importance": 0.4491388513714251
+    },
+    {
+      "feature": "Total Charges",
+      "importance": 0.42819180467898427
+    },
+    {
+      "feature": "Paperless Billing_No",
+      "importance": 0.38813120477435503
+    },
+    {
+      "feature": "Multiple Lines_No",
+      "importance": 0.37166820357487734
+    },
+    {
+      "feature": "Partner_No",
+      "importance": 0.36756631793059885
+    }
+  ]
+}

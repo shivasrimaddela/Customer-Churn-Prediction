@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Customer Churn Predictor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/static/style.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <div class="container py-5">
+      <div class="text-center mb-5">
+        <h1>Customer Churn Prediction</h1>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-lg-5">
+          <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+              <h5 class="card-title">Customer Input</h5>
+              <p class="text-muted">Describe the customer so the model can evaluate churn risk based on contract type, services used, and billing behavior.</p>
+              <form id="prediction-form" class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Tenure (months)</label>
+                  <input type="number" name="tenure" class="form-control" min="0" value="6" required />
+                  <div class="form-text">How long the customer has been active. Short tenure is often associated with higher churn risk.</div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Monthly Charges</label>
+                  <input type="number" name="Monthly Charges" step="0.01" class="form-control" value="70" required />
+                  <div class="form-text">Customer's monthly bill. Higher bills can increase the chance of churn.</div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Contract Type</label>
+                  <select name="Contract" class="form-select" required>
+                    <option>Month-to-month</option>
+                    <option>One year</option>
+                    <option>Two year</option>
+                  </select>
+                  <div class="form-text">Month-to-month plans are less sticky than yearly contracts.</div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Payment Method</label>
+                  <select name="Payment Method" class="form-select" required>
+                    <option>Electronic check</option>
+                    <option>Mailed check</option>
+                    <option>Bank transfer (automatic)</option>
+                    <option>Credit card (automatic)</option>
+                  </select>
+                  <div class="form-text">Automatic payments tend to reduce churn compared to manual billing.</div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Internet Service</label>
+                  <select name="Internet Service" class="form-select" required>
+                    <option>DSL</option>
+                    <option>Fiber optic</option>
+                    <option>No</option>
+                  </select>
+                  <div class="form-text">Fiber optic customers often show higher churn rates than DSL or no internet.</div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Senior Citizen</label>
+                  <select name="Senior Citizen" class="form-select" required>
+                    <option>No</option>
+                    <option>Yes</option>
+                  </select>
+                  <div class="form-text">Senior customers may behave differently in service usage and retention.</div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Partner</label>
+                  <select name="Partner" class="form-select" required>
+                    <option>No</option>
+                    <option>Yes</option>
+                  </select>
+                  <div class="form-text">A partner at home can indicate a more stable household.</div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Dependents</label>
+                  <select name="Dependents" class="form-select" required>
+                    <option>No</option>
+                    <option>Yes</option>
+                  </select>
+                  <div class="form-text">Dependent households may have different service needs and loyalty patterns.</div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Phone Service</label>
+                  <select name="Phone Service" class="form-select" required>
+                    <option>Yes</option>
+                    <option>No</option>
+                  </select>
+                  <div class="form-text">Whether the customer also has phone service with the provider.</div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Paperless Billing</label>
+                  <select name="Paperless Billing" class="form-select" required>
+                    <option>Yes</option>
+                    <option>No</option>
+                  </select>
+                  <div class="form-text">Paperless billing indicates digital preference and billing convenience.</div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Online Security</label>
+                  <select name="Online Security" class="form-select" required>
+                    <option>Yes</option>
+                    <option>No</option>
+                  </select>
+                  <div class="form-text">Additional security services can improve customer satisfaction.</div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Tech Support</label>
+                  <select name="Tech Support" class="form-select" required>
+                    <option>Yes</option>
+                    <option>No</option>
+                  </select>
+                  <div class="form-text">Tech support availability often lowers the risk of churn.</div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Streaming TV</label>
+                  <select name="Streaming TV" class="form-select" required>
+                    <option>No</option>
+                    <option>Yes</option>
+                  </select>
+                  <div class="form-text">Streaming services are part of the customer's entertainment bundle.</div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Streaming Movies</label>
+                  <select name="Streaming Movies" class="form-select" required>
+                    <option>No</option>
+                    <option>Yes</option>
+                  </select>
+                  <div class="form-text">Streaming movies adds value to the subscription package.</div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Multiple Lines</label>
+                  <select name="Multiple Lines" class="form-select" required>
+                    <option>No</option>
+                    <option>Yes</option>
+                  </select>
+                  <div class="form-text">Multiple lines can indicate a larger household or business usage.</div>
+                </div>
+                <div class="col-12 text-end">
+                  <button type="submit" class="btn btn-primary btn-lg">Predict Churn</button>
+                </div>
+              </form>
+            </div>
+          </div>
+          
+          <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+              <h5 class="card-title">Prediction Result</h5>
+              <p id="predictionText" class="fs-5 mb-2">Complete the form and submit for a prediction.</p>
+              <p class="mb-1"><strong>Probability:</strong> <span id="probabilityText">N/A</span></p>
+              <p class="mb-0"><strong>Risk level:</strong> <span id="riskText" class="badge rounded-pill bg-secondary">N/A</span></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-7">
+          <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+              <h5 class="card-title">Model Dashboard</h5>
+              <p class="text-muted mb-4">Insights from the training dataset, including churn distribution, model performance, and feature importance.</p>
+              <div class="row g-4">
+                <div class="col-12">
+                  <canvas id="churnChart" height="180"></canvas>
+                </div>
+                <div class="col-md-6">
+                  <canvas id="modelChart" height="220"></canvas>
+                </div>
+                <div class="col-md-6">
+                  <canvas id="featureChart" height="220"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const form = document.getElementById('prediction-form');
+      const predictionText = document.getElementById('predictionText');
+      const probabilityText = document.getElementById('probabilityText');
+      const riskText = document.getElementById('riskText');
+      let churnChart, modelChart, featureChart;
+
+      function setRiskStyle(level) {
+        riskText.className = 'badge rounded-pill';
+        if (level === 'High') {
+          riskText.classList.add('bg-danger');
+        } else if (level === 'Medium') {
+          riskText.classList.add('bg-warning', 'text-dark');
+        } else if (level === 'Low') {
+          riskText.classList.add('bg-success');
+        } else {
+          riskText.classList.add('bg-secondary');
+        }
+      }
+
+      async function fetchDashboard() {
+        const response = await fetch('/dashboard-data');
+        const body = await response.json();
+        if (!body.success) {
+          return;
+        }
+        renderCharts(body.data);
+      }
+
+      function renderCharts(data) {
+        const churnLabels = Object.keys(data.churn_distribution);
+        const churnValues = Object.values(data.churn_distribution);
+        const modelLabels = data.model_comparison.map(item => item.model);
+        const modelScores = data.model_comparison.map(item => item.f1_score.toFixed(3));
+        const importanceLabels = data.feature_importance.map(item => item.feature);
+        const importanceValues = data.feature_importance.map(item => item.importance.toFixed(4));
+
+        if (churnChart) churnChart.destroy();
+        churnChart = new Chart(document.getElementById('churnChart'), {
+          type: 'doughnut',
+          data: {
+            labels: churnLabels,
+            datasets: [{ data: churnValues, backgroundColor: ['#0d6efd', '#dc3545'] }],
+          },
+          options: { plugins: { legend: { position: 'bottom' } } },
+        });
+
+        if (modelChart) modelChart.destroy();
+        modelChart = new Chart(document.getElementById('modelChart'), {
+          type: 'bar',
+          data: {
+            labels: modelLabels,
+            datasets: [{ label: 'F1 Score', data: modelScores, backgroundColor: '#198754' }],
+          },
+          options: { scales: { y: { beginAtZero: true, max: 1 } } },
+        });
+
+        if (featureChart) featureChart.destroy();
+        featureChart = new Chart(document.getElementById('featureChart'), {
+          type: 'bar',
+          data: {
+            labels: importanceLabels,
+            datasets: [{ label: 'Importance', data: importanceValues, backgroundColor: '#ffc107' }],
+          },
+          options: { indexAxis: 'y', scales: { x: { beginAtZero: true } } },
+        });
+      }
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = new FormData(form);
+        const payload = Object.fromEntries(formData.entries());
+
+        const response = await fetch('/predict', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const body = await response.json();
+        if (!body.success) {
+          predictionText.textContent = 'Prediction failed. Please check the input values.';
+          probabilityText.textContent = 'N/A';
+          riskText.textContent = 'N/A';
+          setRiskStyle('Unknown');
+          return;
+        }
+        predictionText.textContent = body.result.prediction;
+        probabilityText.textContent = `${(body.result.probability * 100).toFixed(1)} %`;
+        riskText.textContent = body.result.risk_level;
+        setRiskStyle(body.result.risk_level);
+      });
+
+      setRiskStyle('Unknown');
+      fetchDashboard();
+    </script>
+  </body>
+</html>
+</html>
