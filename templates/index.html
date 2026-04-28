@@ -145,13 +145,26 @@
               </form>
             </div>
           </div>
-          
-          <div class="card shadow-sm border-0 mb-4">
+
+          <div class="card shadow-sm border-0 mb-4 result-card">
             <div class="card-body">
-              <h5 class="card-title">Prediction Result</h5>
-              <p id="predictionText" class="fs-5 mb-2">Complete the form and submit for a prediction.</p>
-              <p class="mb-1"><strong>Probability:</strong> <span id="probabilityText">N/A</span></p>
-              <p class="mb-0"><strong>Risk level:</strong> <span id="riskText" class="badge rounded-pill bg-secondary">N/A</span></p>
+              <div class="d-flex align-items-start justify-content-between mb-3">
+                <div>
+                  <h5 class="card-title mb-1">Prediction Result</h5>
+                </div>
+                <span id="riskText" class="badge rounded-pill bg-secondary ms-3">N/A</span>
+              </div>
+              <p id="predictionText" class="fs-5 mb-3">Complete the form and submit for a prediction.</p>
+              <div class="mb-3">
+                <div class="d-flex justify-content-between mb-2">
+                  <span class="text-muted">Probability</span>
+                  <strong><span id="probabilityText">N/A</span></strong>
+                </div>
+                <div class="progress result-progress">
+                  <div id="probabilityBar" class="progress-bar" role="progressbar" style="width: 0%;"></div>
+                </div>
+              </div>
+              <div id="predictionDetails" class="prediction-details"></div>
             </div>
           </div>
         </div>
@@ -160,7 +173,6 @@
           <div class="card shadow-sm border-0 mb-4">
             <div class="card-body">
               <h5 class="card-title">Model Dashboard</h5>
-              <p class="text-muted mb-4">Insights from the training dataset, including churn distribution, model performance, and feature importance.</p>
               <div class="row g-4">
                 <div class="col-12">
                   <canvas id="churnChart" height="180"></canvas>
@@ -196,6 +208,48 @@
         } else {
           riskText.classList.add('bg-secondary');
         }
+      }
+
+      function buildPredictionDetails(formData, result) {
+        const entries = [];
+        const tenure = Number(formData.get('tenure'));
+        const monthlyCharges = Number(formData.get('Monthly Charges'));
+        const contract = formData.get('Contract');
+        const internet = formData.get('Internet Service');
+        const payment = formData.get('Payment Method');
+        const security = formData.get('Online Security');
+        const support = formData.get('Tech Support');
+
+        if (tenure < 12) {
+          entries.push('Short tenure means the customer is still early in their lifecycle, increasing churn risk.');
+        } else {
+          entries.push('Longer tenure usually strengthens customer loyalty.');
+        }
+        if (contract === 'Month-to-month') {
+          entries.push('Month-to-month contracts are less sticky and more likely to churn.');
+        } else {
+          entries.push('A longer-term contract reduces the likelihood of churn.');
+        }
+        if (monthlyCharges > 80) {
+          entries.push('Higher monthly charges can raise the incentive to cancel.');
+        }
+        if (internet === 'Fiber optic') {
+          entries.push('Fiber optic customers often show stronger churn behavior.');
+        }
+        if (payment.includes('automatic')) {
+          entries.push('Automatic payment methods usually improve retention.');
+        }
+        if (security === 'Yes') {
+          entries.push('Online security is a positive retention signal.');
+        }
+        if (support === 'No') {
+          entries.push('Lack of tech support availability can increase churn risk.');
+        }
+        if (entries.length === 0) {
+          entries.push('The model uses the provided customer attributes to calculate churn probability.');
+        }
+
+        return entries.map(item => `<li>${item}</li>`).join('');
       }
 
       async function fetchDashboard() {
@@ -265,14 +319,19 @@
           return;
         }
         predictionText.textContent = body.result.prediction;
-        probabilityText.textContent = `${(body.result.probability * 100).toFixed(1)} %`;
+        const percent = (body.result.probability * 100).toFixed(1);
+        probabilityText.textContent = `${percent} %`;
+        document.getElementById('probabilityBar').style.width = `${percent}%`;
         riskText.textContent = body.result.risk_level;
         setRiskStyle(body.result.risk_level);
+        document.getElementById('predictionDetails').innerHTML = `
+          <h6 class="mb-2">Why this prediction?</h6>
+          <ul class="detail-list">${buildPredictionDetails(new FormData(form), body.result)}</ul>
+        `;
       });
 
       setRiskStyle('Unknown');
       fetchDashboard();
     </script>
   </body>
-</html>
 </html>
